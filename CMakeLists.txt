@@ -49,6 +49,8 @@ if(NOT DEFINED ADDITIONAL_TOOLCHAIN_PATH)
         set(ADDITIONAL_TOOLCHAIN_PATH "${CMAKE_CURRENT_LIST_DIR}/utils/${CMAKE_HOST_SYSTEM_NAME}/riscv-none-embed-gcc/bin/")
         add_compile_options(--param highcode-gen-section-name=1)
     endif()
+else()
+    add_compile_options(--param highcode-gen-section-name=1)
 endif()
 
 find_program(CMAKE_C_COMPILER NAMES ${TOOLCHAIN_PREFIX}-gcc PATHS ${ADDITIONAL_TOOLCHAIN_PATH} REQUIRED)
