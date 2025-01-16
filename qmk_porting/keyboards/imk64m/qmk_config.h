@@ -39,7 +39,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define BOOTMAGIC_ROW    0
 #define BOOTMAGIC_COLUMN 0
 // #define PERMISSIVE_HOLD
-#define HOLD_ON_OTHER_KEY_PRESS
+#undef HOLD_ON_OTHER_KEY_PRESS
+#define TAPPING_TERM 200
+// disable these hold feature for home row mod
+#undef PERMISSIVE_HOLD
+#undef RETRO_TAPPING
 
 #define EARLY_INIT_PERFORM_BOOTLOADER_JUMP FALSE
 
