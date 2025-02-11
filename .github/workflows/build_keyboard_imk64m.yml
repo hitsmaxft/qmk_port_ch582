@@ -1,5 +1,5 @@
-name: Build keyboard firmware
-run-name: Build keyboard firmware
+name: Build imk64m firmware
+run-name: Build imk64m firmware
 
 on:
   push:
