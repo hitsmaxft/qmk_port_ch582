@@ -130,3 +130,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define NO_ACTION_LAYER
 // #define NO_ACTION_TAPPING
 // #define NO_ACTION_ONESHOT
+
+
+#undef RETRO_TAPPING
+#define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD_PER_KEY
+#define QUICK_TAP_TERM 100
+#define QUICK_TAP_TERM_PER_KEY
+#undef HOLD_ON_OTHER_KEY_PRESS
+
