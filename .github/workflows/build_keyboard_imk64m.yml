@@ -1,9 +1,9 @@
-name: Build keyboard firmware
-run-name: Build keyboard firmware
+name: Build imk64m firmware
+run-name: Build imk64m firmware
 
 on:
-  # push:
-  #   branches: ["via"]
+  push:
+    branches: ["mybuild2"]
   # pull_request:
   #   branches: ["via"]
   # # Allows you to run this workflow manually from the Actions tab or through HTTP API
@@ -13,9 +13,10 @@ on:
         description: "Keyboard name"
         required: true
         type: string
+        default: "imk64m"
       keymap:
         description: "Specified keymap"
-        default: "default"
+        default: "macvim"
         required: true
         type: string
 
@@ -31,7 +32,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Set name output
+        id: name
+        run: |
+          USER_KB=${{ github.event.keyboard }}
+          USER_KM=${{ github.event.keymap }}
+          echo "::set-output name=kb::${USER_KB:-"imk64m"}"
+          echo "::set-output name=km::${USER_KM:-"macvim"}"
 
       - name: Fetch all
         run: git fetch
@@ -48,7 +57,7 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${{env.BUILD_TYPE}} -Dkeyboard:STRING=${{inputs.keyboard}} -Dkeymap:STRING=${{inputs.keymap}} -S${{github.workspace}} -B${{github.workspace}}/build
+        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${{env.BUILD_TYPE}} -Dkeyboard:STRING=${{steps.name.outputs.kb}} -Dkeymap:STRING=${{steps.name.outputs.km}} -S${{github.workspace}} -B${{github.workspace}}/build
 
       - name: Build
         # Build your program with the given configuration
@@ -57,17 +66,17 @@ jobs:
       - name: Get git version
         run: echo "git_ver=$(git describe --always --dirty)" >> $GITHUB_ENV
 
-      - name: UF2 Firmware (${{inputs.keyboard}})
-        uses: actions/upload-artifact@v3
+      - name: UF2 Firmware (${{steps.name.outputs.kb}})
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{inputs.keyboard}}.uf2
-          path: ${{inputs.keyboard}}_upgrade_${{ env.git_ver }}.uf2
+          name: ${{steps.name.outputs.kb}}.uf2
+          path: ${{steps.name.outputs.kb}}_upgrade_${{ env.git_ver }}.uf2
 
-      - name: Hex Firmware (${{inputs.keyboard}})
-        uses: actions/upload-artifact@v3
+      - name: Hex Firmware (${{steps.name.outputs.kb}})
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{inputs.keyboard}}.hex
-          path: ${{inputs.keyboard}}_factory_${{ env.git_ver }}.hex
+          name: ${{steps.name.outputs.kb}}.hex
+          path: ${{steps.name.outputs.kb}}_factory_${{ env.git_ver }}.hex
 
       # - name: Test
       #   working-directory: ${{github.workspace}}/build
